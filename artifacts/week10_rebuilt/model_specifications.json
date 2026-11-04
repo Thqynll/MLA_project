@@ -1,0 +1,49 @@
+{
+  "Outcomes LR": [
+    "last_correct",
+    "recent_accuracy",
+    "prefix_accuracy"
+  ],
+  "Combined LR": [
+    "last_correct",
+    "recent_accuracy",
+    "prefix_accuracy",
+    "time_latest",
+    "time_recent",
+    "time_prefix"
+  ],
+  "Relative LR": [
+    "last_correct",
+    "recent_accuracy",
+    "prefix_accuracy",
+    "item_relative_latest",
+    "item_relative_recent",
+    "item_relative_prefix",
+    "person_relative_latest",
+    "person_relative_recent"
+  ],
+  "Process LR": [
+    "last_correct",
+    "recent_accuracy",
+    "prefix_accuracy",
+    "time_latest",
+    "time_recent",
+    "time_prefix",
+    "action_toggle",
+    "action_deselection",
+    "action_latency"
+  ],
+  "Relative Process LR": [
+    "last_correct",
+    "recent_accuracy",
+    "prefix_accuracy",
+    "item_relative_latest",
+    "item_relative_recent",
+    "item_relative_prefix",
+    "person_relative_latest",
+    "person_relative_recent",
+    "action_toggle",
+    "action_deselection",
+    "action_latency"
+  ]
+}

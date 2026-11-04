@@ -1,0 +1,33 @@
+{
+  "run_utc": "2026-11-04T00:26:04.793035+00:00",
+  "python": "3.12.14",
+  "numpy": "2.3.5",
+  "pandas": "2.2.3",
+  "scikit_learn": "1.8.0",
+  "script": "scripts/week09/train_combined.py",
+  "function": "main",
+  "command": "python scripts/week09/train_combined.py",
+  "split_status": "reconstructed",
+  "training_participants": 746,
+  "validation_participants": 249,
+  "categorical_feature": "block_anchor_instruction",
+  "numeric_features": [
+    "last_correct",
+    "recent_accuracy",
+    "prefix_accuracy",
+    "time_latest",
+    "time_recent",
+    "time_prefix"
+  ],
+  "selection": "minimum validation log loss within Combined LR only",
+  "selected_C": 0.1,
+  "test_evaluated": false,
+  "model_saved": false,
+  "sha256": {
+    "artifacts/week09_rebuilt/participant_split.csv": "9ed9590bb6dfa91a43a49f46cd13943b63583738ae468f74404487f5e4285f6e",
+    "artifacts/splits/participant_split.csv": "56404c3a6b905a90f407cf45f92a98a2c42615e6b7347f1c5870c29a3745ee01",
+    "data/processed/development_windows_with_timing.csv": "06e60184222310d1b26fd230f71f2ce25f8e75283a4a9ffce44521a54a59de52",
+    "data/processed/development_windows.csv": "60e1eb7bd5b02f1fb13ef101b0a06574af38aa3e012e7f3095a2c8217ca8f8ac",
+    "scripts/week09/train_combined.py": "325dc036b8fe06b07c83f4e98f68c893f7dd7f92b173879285c87d977b909c80"
+  }
+}

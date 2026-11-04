@@ -1,0 +1,13 @@
+output,source_file,function,entrypoint,command,run_utc,prediction_source,sha256_source
+tables/table04_overall_metrics.csv,scripts/week10/w10_evaluate.py,metric_table,scripts/week10/run_week10.py,python scripts/week10/run_week10.py,2026-11-04T00:44:36.086513+00:00,oof_predictions.csv,run_manifest.json
+tables/table05_overall_differences.csv,scripts/week10/w10_evaluate.py,paired_differences,scripts/week10/run_week10.py,python scripts/week10/run_week10.py,2026-11-04T00:44:36.086513+00:00,oof_predictions.csv,run_manifest.json
+tables/table06_history_outcomes_combined.csv,scripts/week10/w10_evaluate.py,metric_table,scripts/week10/run_week10.py,python scripts/week10/run_week10.py,2026-11-04T00:44:36.086513+00:00,oof_predictions.csv,run_manifest.json
+tables/table07_history_all_lr_metrics.csv,scripts/week10/w10_evaluate.py,metric_table,scripts/week10/run_week10.py,python scripts/week10/run_week10.py,2026-11-04T00:44:36.086513+00:00,oof_predictions.csv,run_manifest.json
+tables/table07_history_differences.csv,scripts/week10/w10_evaluate.py,paired_differences,scripts/week10/run_week10.py,python scripts/week10/run_week10.py,2026-11-04T00:44:36.086513+00:00,oof_predictions.csv,run_manifest.json
+tables/table08_relative_timing_differences.csv,scripts/week10/w10_evaluate.py,paired_differences,scripts/week10/run_week10.py,python scripts/week10/run_week10.py,2026-11-04T00:44:36.086513+00:00,oof_predictions.csv,run_manifest.json
+tables/table09_action_differences.csv,scripts/week10/w10_evaluate.py,paired_differences,scripts/week10/run_week10.py,python scripts/week10/run_week10.py,2026-11-04T00:44:36.086513+00:00,oof_predictions.csv,run_manifest.json
+tables/table10_review_budgets.csv,scripts/week10/w10_evaluate.py,review_budgets,scripts/week10/run_week10.py,python scripts/week10/run_week10.py,2026-11-04T00:44:36.086513+00:00,oof_predictions.csv,run_manifest.json
+tables/mixed_history_metrics.csv,scripts/week10/w10_evaluate.py,metric_table,scripts/week10/run_week10.py,python scripts/week10/run_week10.py,2026-11-04T00:44:36.086513+00:00,oof_predictions.csv,run_manifest.json
+tables/mixed_history_differences.csv,scripts/week10/w10_evaluate.py,paired_differences,scripts/week10/run_week10.py,python scripts/week10/run_week10.py,2026-11-04T00:44:36.086513+00:00,oof_predictions.csv,run_manifest.json
+tables/case_review_10.csv,scripts/week10/w10_evaluate.py,select_cases,scripts/week10/run_week10.py,python scripts/week10/run_week10.py,2026-11-04T00:44:36.086513+00:00,oof_predictions.csv,run_manifest.json
+tables/fold_metrics.csv,scripts/week10/w10_evaluate.py,metric_table,scripts/week10/run_week10.py,python scripts/week10/run_week10.py,2026-11-04T00:44:36.086513+00:00,oof_predictions.csv,run_manifest.json

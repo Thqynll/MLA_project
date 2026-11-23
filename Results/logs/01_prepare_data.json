@@ -1,0 +1,19 @@
+{
+  "stage": "01_prepare_data",
+  "completed_utc": "2026-11-22T12:54:03.709340+00:00",
+  "inputs": {
+    "Code/01_prepare_data.py": "17bbe63cc5de550cf9a30cb92af70e875427cceb50a59da419022ccc67c4fe5e",
+    "Code/config.py": "8235edc019af354948de50aa2e2f9cf73614eced28920a4b11a92418b472dfb1",
+    "Data/source_checksums.csv": "ced000525bbab84902ecbde4166c7656d0aec6565e70ab17479d1d5c1b0d2d8f"
+  },
+  "outputs": {
+    "Data/source/action_log.csv": "d3c01c1599f59e87c153a5dac9aaaa3d03f2ec61a827165f0695ad2a161212d7",
+    "Data/source/main_responses.csv": "872815caf0969a21ed9db4f95e5ebbd2ff48ff63e0782bd442fca4e6c87a45b0",
+    "Data/source/scoring_keys.csv": "eb5802ac066ce90030005926088a8f957c5dc2bde2332bb5dd1963e1dc4de3cd"
+  },
+  "release_sha256": {
+    "tte_data.csv": "288515597704dc9279a3202fd16ad81ac8a5a5eab12c7c8863ae93e61505e1a3",
+    "mr_logdata.csv": "0f27c344f41a7804239461167e99ecf1df24da7b709c853f3ecf4a8f9ca2e4b4",
+    "mr_itemsolutions.csv": "e5fb1b59fcafd1cd9e8513c012733e23c38328d124982f9fedf4ab9991b678d8"
+  }
+}

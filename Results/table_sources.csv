@@ -1,0 +1,15 @@
+output,function,run_utc,source_file,entrypoint,input
+Results/tables/table04_overall_metrics.csv,history_tables.metric_table,2026-11-21T10:37:15.376966+00:00,Code/history_tables.py,Code/04_evaluate_predictions.py,Results/fit/oof_predictions.csv
+Results/tables/table05_overall_differences.csv,history_tables.paired_differences,2026-11-21T10:37:15.376966+00:00,Code/history_tables.py,Code/04_evaluate_predictions.py,Results/fit/oof_predictions.csv
+Results/tables/table06_history_outcomes_combined.csv,history_tables.metric_table,2026-11-21T10:37:15.376966+00:00,Code/history_tables.py,Code/04_evaluate_predictions.py,Results/fit/oof_predictions.csv
+Results/tables/table07_history_all_lr_metrics.csv,history_tables.metric_table,2026-11-21T10:37:15.376966+00:00,Code/history_tables.py,Code/04_evaluate_predictions.py,Results/fit/oof_predictions.csv
+Results/tables/table07_history_differences.csv,history_tables.paired_differences,2026-11-21T10:37:15.376966+00:00,Code/history_tables.py,Code/04_evaluate_predictions.py,Results/fit/oof_predictions.csv
+Results/tables/table08_relative_timing_differences.csv,history_tables.paired_differences,2026-11-21T10:37:15.376966+00:00,Code/history_tables.py,Code/04_evaluate_predictions.py,Results/fit/oof_predictions.csv
+Results/tables/table09_action_differences.csv,history_tables.paired_differences,2026-11-21T10:37:15.376966+00:00,Code/history_tables.py,Code/04_evaluate_predictions.py,Results/fit/oof_predictions.csv
+Results/tables/table10_review_budgets.csv,history_tables.review_budgets,2026-11-21T10:37:15.376966+00:00,Code/history_tables.py,Code/04_evaluate_predictions.py,Results/fit/oof_predictions.csv
+Results/tables/mixed_history_metrics.csv,history_tables.metric_table,2026-11-21T10:37:15.376966+00:00,Code/history_tables.py,Code/04_evaluate_predictions.py,Results/fit/oof_predictions.csv
+Results/tables/mixed_history_differences.csv,history_tables.paired_differences,2026-11-21T10:37:15.376966+00:00,Code/history_tables.py,Code/04_evaluate_predictions.py,Results/fit/oof_predictions.csv
+Results/tables/case_review_10.csv,history_tables.select_cases,2026-11-21T10:37:15.376966+00:00,Code/history_tables.py,Code/04_evaluate_predictions.py,Results/fit/oof_predictions.csv
+Results/tables/fold_metrics.csv,history_tables.metric_table,2026-11-21T10:37:15.376966+00:00,Code/history_tables.py,Code/04_evaluate_predictions.py,Results/fit/oof_predictions.csv
+Results/tables/metrics.csv,comparison_tables.metrics,2026-11-21T10:37:15.376966+00:00,Code/comparison_tables.py,Code/04_evaluate_predictions.py,Results/fit/oof_predictions.csv
+Results/tables/paired_differences.csv,comparison_tables.paired,2026-11-21T10:37:15.376966+00:00,Code/comparison_tables.py,Code/04_evaluate_predictions.py,Results/fit/oof_predictions.csv

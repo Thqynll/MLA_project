@@ -1,0 +1,9 @@
+report_item,input,source_function
+Table 1,Results/tables/metrics.csv,comparison_tables.metrics
+Table 2,Results/tables/paired_differences.csv,comparison_tables.paired
+Table 3,Results/tables/metrics.csv,comparison_tables.metrics
+Figure 1,Results/tables/table07_history_differences.csv,05_export_results.timing_figure
+Table 4,Results/tables/case_review_10.csv,history_tables.select_cases
+Table 5,Results/tables/table10_review_budgets.csv,history_tables.review_budgets
+Table 6,Data/reference/historical_predictions.csv + Results/tables/metrics.csv,report_content.report_pages
+Anchor example,Results/fit/oof_predictions.csv,report_content.report_pages

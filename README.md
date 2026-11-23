@@ -1,94 +1,87 @@
-# MLA_project — Week 10 reconstruction
+﻿# Response Process Analysis for Assessment Review
 
-A runnable reconstruction of the Week 10 response-process analysis. The ZIP includes source data, code, saved participant assignments, fitted outer-fold models, and executed results. The new outputs are identified as reconstruction results; they are not presented as the original report's exact run.
+Group 04 | Machine Learning Applications | 61FIT4MLA
 
-## Open and run
+After an adult completes a matrix-reasoning item, do recorded times and selection actions improve prediction of the next three responses beyond the correctness history? The final analysis is the reconstructed, matched LR and CART comparison. The October Week 10 probabilities are preserved as a separate historical reference.
 
-1. Extract the ZIP to a new folder, for example `D:/MLA_project_week10/`.
-2. In VS Code, open the folder containing this README, `data/`, `scripts/`, and `artifacts/`.
-3. Select the Python interpreter. Install dependencies only if needed:
+## Data provenance and processing
 
-```powershell
-python -m pip install -r requirements.txt
-```
+| Source record | Published link | Member-confirmed official URL |
+| --- | --- | --- |
+| Official Data Source / Repository Link | [Much et al., OSF dataset](https://osf.io/9j6hm/overview) | **[Enter verified repository URL here]** |
+| Data Paper / Reference Link | [Much et al. (2025), Journal of Open Psychology Data](https://openpsychologydata.metajnl.com/articles/10.5334/jopd.124) | **[Enter verified paper URL here]** |
 
-4. Open `scripts/week10/run_week10.py` and click **Run Python File**, or run from the project root:
+**License & Redistribution Status.** Much, Mutak, Pohl and Ranger released the dataset under CC BY 4.0. They replaced the Prolific identifiers with study-generated numeric IDs and report that the public release contains no identifying information. The six original data and codebook files in `Data/` are redistributed with attribution. The source register also identifies the local archived release, data paper, and supporting preregistration. [Data provenance and file inventory](Data/README.md) · [Data paper, sections 3.6–3.7](https://pmc.ncbi.nlm.nih.gov/articles/PMC12270193/) · [License](https://creativecommons.org/licenses/by/4.0/)
 
-```powershell
-python scripts/week10/run_week10.py
-```
+The sibling archive `MLA_project_pre_restructure_20261121/` holds the local release in `data/raw/`, the data paper in `docs/references/dataset-paper.pdf`, and the supporting preregistration in `docs/references/Preregistration_Psychometric-Model-Validation.pdf`. [Study preregistration](https://osf.io/jm7ne/)
 
-5. Verify the completed outputs:
+**Data processing selection.** Stage 01 verifies `Data/tte_data.csv`, `mr_logdata.csv` and `mr_itemsolutions.csv` and selects the 20 main items and required fields into `Data/source/`. Stage 02 audits scores and ordered actions, codes verified omissions as zero, rejects inconsistent measurements, and retains valid long durations without trimming. It converts milliseconds to seconds and builds correctness, timing and action histories using only completed items. It checks the saved participant assignments in `Results/splits/` and writes 9,950 windows from 995 development participants to `Results/features/development_windows.csv`. All windows for one person remain in one outer fold. Stage 03 fits preprocessing and tunes models on training participants; `Results/fit/inner_folds.csv` records its inner splits. The 249 historical test participants are excluded from model evaluation. [Preparation script](Code/01_prepare_data.py) · [Window construction](Code/02_build_features.py)
 
-```powershell
-python scripts/checks/verify_week10.py
-python -m unittest discover -s tests -v
-```
+The source manifest records each original filename, file size, SHA-256 checksum and OSF download URL. The processing guide links each stage to its outputs. [Original file manifest](Data/release_checksums.csv) and [data processing guide](Data/README.md#data-processing-selection).
 
-Already computed outputs are in `artifacts/week10_rebuilt/`. Open `RESULTS.md` with VS Code's Markdown preview (`Ctrl+Shift+V`) to inspect the tables before running anything. Runtime varies by computer. Re-running replaces the current Week 10 outputs, so retain the delivered ZIP as a checkpoint.
+## Contributors
 
-The scripts locate the root from their own file paths. Keep them directly under the documented folders. Do not create `scripts/week10/scripts/week10/` by extracting into the wrong directory.
-
-## What is included
-
-- An integrity audit of all 24,880 main responses: selections, public keys, omissions, durations, and action counters.
-- A frozen 995-development / 249-test participant split and five saved outer folds.
-- 9,950 development windows, anchors 3 through 7 within each of two blocks.
-- Four training-only priors: global, item, window, and recent-history.
-- Five LR models: Outcomes, Combined, Relative, Process, and Relative Process.
-- Five outer participant folds and three inner participant folds, tuning C in [0.1, 1.0] separately for each LR model.
-- Item-relative medians, context encoders, and scalers learned again within every training fold.
-- Overall and four-history-group metrics, 2,000 paired participant-bootstrap draws, and 5%, 10%, 20% review budgets.
-- Ten OOF cases selected by a documented rule, plus a fixed-model response-time sensitivity command.
-- All 25 fitted outer-fold LR pipelines, selected C values, inner assignments, training medians, and input/code checksums.
-
-The held-out 249 people are excluded from all new model fits, tuning, predictions, and evaluation. A whole-release integrity audit is kept separate from model evaluation. No participant is removed because they answered zero items correctly.
-
-## Files to inspect first
-
-| Path | Purpose |
+| Group member | Documented individual contribution |
 | --- | --- |
-| `scripts/week10/run_week10.py` | Single entry point for the full Week 10 run. |
-| `scripts/week10/w10_data.py` | Raw-data audit, participant splits, and completed-history windows. |
-| `scripts/week10/w10_models.py` | Priors, relative-time features, nested tuning, and model saving. |
-| `scripts/week10/w10_evaluate.py` | Metrics, paired intervals, review budgets, and case selection. |
-| `artifacts/week10_rebuilt/RESULTS.md` | All new tables with source functions and run date. |
-| `artifacts/week10_rebuilt/table_sources.csv` | Table-to-code, command, date, and prediction-file mapping. |
-| `artifacts/week10_rebuilt/run_manifest.json` | Versions, seeds, code/data/output hashes, and run completion. |
-| `artifacts/week10_rebuilt/verification.json` | Independent verification outcome. |
-| `docs/PROTOCOL.md` | Definitions and evaluation boundaries. |
-| `docs/REPRODUCTION_NOTES.md` | Relationship to earlier report numbers and remaining work. |
+| Le Hoang The Quyen | Member evidence pending |
+| Tran Gia Thanh | Member evidence pending |
+| Nguyen Phu Trong | Member evidence pending |
 
-CSV tables retain high precision. Round only for presentation; a displayed upper CI bound of `+0.0000` is not evidence that the full-precision bound is exactly zero.
+Each member records the source passage or code-to-result trace they verified in `AI_Log/AI_Use_Log.md`. The ten selected windows and member observations are kept separately so rerunning the analysis preserves manual work.
 
-## Existing Week 9 stage
+## Environment
 
-The earlier `scripts/week09/make_split.py`, `train_outcomes.py`, and `train_combined.py` are included with their executed outputs in `artifacts/week09_rebuilt/`. They use the reconstructed 746/249 training/validation assignment and preserve the same 249 test IDs.
+The tested environment is 64-bit CPython 3.14.0 on Windows. All Python packages used for the analysis and PDF export are pinned in `requirements.txt`. Start in the directory containing this README. In PowerShell:
 
 ```powershell
-python scripts/week09/make_split.py
-python scripts/week09/train_outcomes.py
-python scripts/prepare/add_timing_features.py
-python scripts/week09/train_combined.py
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\Activate.ps1
 ```
 
-Week 10 uses all 995 development participants through nested CV. It does not use the Week 9 train/validation labels for outer-fold assignment. Keep both split files; their roles differ.
+On a POSIX system use `python3 -m venv .venv`, `. .venv/bin/activate`, then `python -m pip install -r requirements.txt`. The paths in the analysis are relative to the project. The PDF renderer uses Matplotlib; TeX is optional.
 
-## Ten cases and interview practice
+## Reproduce the report
 
-Open `artifacts/week10_rebuilt/tables/case_review_10.csv`. The selection rule is in `analysis_plan.json` and above the tables in `RESULTS.md`. The `reviewed_by_member` field is intentionally blank: team members must actually inspect the cases before claiming that review is complete.
+Run each line after the previous one succeeds. The first command rebuilds the projections from the original CSVs bundled directly in `Data/`. Running it without arguments validates the prepared copies. The remaining steps regenerate the features, fitted models, evaluation tables, figures and report using the frozen assignments and November numerical reference tables.
 
-```powershell
-python scripts/week10/inspect_case.py
-python scripts/week10/inspect_case.py --id 2096 --block 1 --anchor 7
+```text
+python -B Code/01_prepare_data.py --release Data
+python -B Code/02_build_features.py
+python -B Code/03_train_models.py
+python -B Code/04_evaluate_predictions.py
+python -B Code/05_export_results.py
+python -B -m unittest discover -s Code/tests -v
+python -B Code/verify_results.py
 ```
 
-This uses the saved model that held the selected development person out. It doubles only the latest completed duration and recomputes the timing summaries without refitting. It is a feature sensitivity check, not a causal estimate. ID 1535 is part of the frozen test split, so this tool uses development cases instead. `scripts/checks/check_window.py` retains the descriptive ID 1535 example without fitting or scoring a model.
+Use one run at a time in a given working copy. Generated outputs replace their previous versions. The frozen participant assignments and member review register are inputs. Participant-level training, validation and test membership can be reconstructed from `Results/splits/`, `Results/features/development_folds.csv` and `Results/fit/inner_folds.csv`. Each outer fold trains on the other four folds. The 249 historical test participants contribute no probabilities to the final evaluation.
 
-## Compatibility and source handling
+## Verify one reported result independently
 
-The run's exact versions are in `run_manifest.json` and `environment_reference.txt`. CSV outputs are portable. Load saved joblib pipelines with the matching scikit-learn version, or rerun training in your environment first. The scripts use no `iloc` operations.
+From the project root, run:
 
-When integrating into an existing project, preserve its saved split and outer-fold CSVs. Compare them before copying; do not overwrite frozen assignments merely to obtain matching scores. The main runner reuses existing assignments and only creates them when absent.
+```text
+python -c "import pandas as pd; from sklearn.metrics import log_loss; x=pd.read_csv('Results/fit/oof_predictions.csv',float_precision='round_trip'); print(len(x), x.participant_id.nunique(), format(log_loss(x.label,x.p_combined),'.6f'))"
+```
 
-Read `docs/DATA_SOURCES.md` for file usage and dataset attribution. Papers and codebooks are references, not training samples. AI assistance and the human-review checklist are recorded in `docs/AI_USE_AND_REVIEW.md`.
+Expected output: `9950 995 0.304950`. In Table 1, this is the overall Combined LR log loss. The matching Outcomes LR value is 0.307811. Table 2 reports the paired change and its participant-bootstrap interval. Table 6 uses the original October probabilities in a separate column.
+
+## Three-week development plan
+
+| Week | Files and work | Acceptance evidence |
+| --- | --- | --- |
+| 1. Data and features | Steps 01 and 02, Data documentation, frozen assignments, response and action audit | Three release checksums, 24,880 audited item responses, 143 omissions, 995 development participants, 9,950 windows and an explicit anchor trace |
+| 2. Models and evaluation | Steps 03 and 04, matched nested folds, LR and CART tuning, 2,000 paired participant draws, subgroup comparisons, budgets and ten selected cases | Replay of 40 fitted models, numerical comparison of 14 tables and member review of selected cases |
+| 3. Report and delivery | Step 05, report provenance, environment setup, AI disclosure, English-language and release checks | Report PDF and LaTeX source, a fresh environment run, source and output checksums, documented personal contributions and signed case observations |
+
+## Files to open
+
+- `Report/Final_Report.pdf` and `Report/final_report.tex` contain the report.
+- `Report/report_sources.csv` identifies the input and generating function for every displayed table and figure.
+- `Results/table_sources.csv` maps the full evaluation exports to their source functions and held-out predictions. The stage logs contain the corresponding run times and hashes.
+- `Results/figures/timing_by_history.png` shows paired timing effects for all four history groups.
+- `Report/member_case_review.csv` retains public window identifiers and space for evidence, interpretation and a decision. Complete it after inspecting the data.
+- `Data/README.md` and `AI_Log/AI_Use_Log.md` describe attribution, transformations, AI assistance and human review.
+
+The final assessment package contains no video. The accompanying evidence concerns this protocol and does not establish the effectiveness of a deployment in classrooms.

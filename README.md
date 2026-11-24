@@ -16,15 +16,59 @@ All ten manual checks, including each reviewer's observations and decisions, are
 
 ## Setup
 
-Start in the project folder containing this README and `requirements.txt`. The tested environment is 64-bit CPython 3.14.0 on Windows. In PowerShell, create a virtual environment and install the pinned dependencies.
+The project was tested on Windows with 64-bit Python 3.14.0. Open a terminal in the project folder containing this README and `Code/`.
+
+### 1. Create and activate a Python environment
+
+**Windows (PowerShell)**
 
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
+```
+
+**macOS or Linux**
+
+```sh
+python3 -m venv .venv
+. .venv/bin/activate
+```
+
+### 2. Install the libraries before running the analysis
+
+The project uses pandas and NumPy for data processing, scikit-learn and SciPy for modelling, joblib to save models, threadpoolctl to control training threads, and Matplotlib to draw tables and charts.
+
+If you have the full submission, the package list is already in [requirements.txt](requirements.txt). If that file is missing, create a plain-text file named `requirements.txt` below this README and paste in these lines:
+
+```text
+cloudpickle==3.1.2
+contourpy==1.4.0
+cycler==0.12.1
+fonttools==4.65.0
+joblib==1.6.0
+kiwisolver==1.5.1
+matplotlib==3.11.2
+narwhals==2.26.0
+numpy==2.5.3
+packaging==25.0
+pandas==3.0.5
+pillow==12.0.0
+pyparsing==3.3.2
+python-dateutil==2.9.0.post0
+scikit-learn==1.9.1
+scipy==1.18.1
+six==1.17.0
+threadpoolctl==3.6.0
+tzdata==2026.3
+```
+
+With the environment active, install all the listed packages in one command:
+
+```sh
 python -m pip install -r requirements.txt
 ```
 
-On a POSIX shell, create the environment with `python3 -m venv .venv`, activate it with `. .venv/bin/activate`, then run the same installation command.
+Then [run the analysis](#run-the-analysis) or [check the main result](#reproduce-one-main-result) using the saved predictions.
 
 The dataset is bundled in `Data/`. The analysis uses `Data/tte_data.csv` for responses and durations, `Data/mr_logdata.csv` for actions, and `Data/mr_itemsolutions.csv` for scoring keys. The three accompanying codebooks are also included. File sizes and SHA-256 checksums are listed in `Data/release_checksums.csv`. See the [data guide](Data/DATA_README.md) for processing details.
 

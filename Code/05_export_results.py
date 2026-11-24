@@ -1,123 +1,128 @@
-"""Export the report, figure and provenance from the evaluated probabilities."""
-import textwrap
-from pathlib import Path
+"""Export PNG images of the six report tables and the timing figure."""
+from shutil import rmtree
+from uuid import uuid4
 
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_pdf import PdfPages
 import numpy as np
-import pandas as pd
+from sklearn.metrics import log_loss
 
-from config import DATA, FIT, RESULTS, ROOT, TABLES, read_table, record, save_table
-from report_content import report_pages
+from config import DATA, RESULTS, TABLES, read_table, record
 
-REPORT = ROOT / "Report"
 FIGURES = RESULTS / "figures"
+INPUTS = [
+    TABLES / "metrics.csv", TABLES / "paired_differences.csv",
+    TABLES / "case_review_10.csv", TABLES / "table10_review_budgets.csv",
+    DATA / "reference/historical_predictions.csv",
+    TABLES / "table07_history_differences.csv",
+]
+MODELS = ("History prior", "Outcomes LR", "Combined LR", "Process LR",
+          "Outcomes CART", "Combined CART", "Process CART")
+PAIRS = (("Outcomes LR", "History prior"), ("Combined LR", "Outcomes LR"),
+         ("Process LR", "Combined LR"), ("Combined CART", "Outcomes CART"),
+         ("Combined CART", "Combined LR"))
+HISTORIES = ("0/3", "1/3", "2/3", "3/3")
 
 
-def timing_figure():
-    frame = read_table(TABLES / "table07_history_differences.csv")
-    frame = frame.query("first == 'Combined LR' and second == 'Outcomes LR'").sort_values("scope")
-    x = frame.log_loss_difference
+def effect(row):
+    return [f"{row.log_loss_difference:+.6f}",
+            f"[{row.log_loss_ci_low:+.6f}, {row.log_loss_ci_high:+.6f}]"]
+
+
+def report_tables():
+    metrics = read_table(TABLES / "metrics.csv").set_index(["scope", "model"]).set_flags(allows_duplicate_labels=False)
+    paired = read_table(TABLES / "paired_differences.csv").set_index(
+        ["scope", "first", "second"]).set_flags(allows_duplicate_labels=False)
+    overall = []
+    for name in MODELS:
+        row = metrics.loc["all", name]
+        overall.append([name, f"{row.log_loss:.6f}", f"{row.brier:.6f}", f"{row.auc:.6f}"])
+    yield "table_01_performance", ["Model", "Log loss", "Brier score", "ROC AUC"], overall
+
+    changes = [[first, second, *effect(paired.loc["all", first, second])] for first, second in PAIRS]
+    yield "table_02_paired_changes", ["First model", "Second model", "Change", "95% interval"], changes
+
+    histories = []
+    for scope in HISTORIES:
+        row = metrics.loc[scope, "Outcomes LR"]
+        delta = effect(paired.loc[scope, "Combined LR", "Outcomes LR"])
+        histories.append([scope, f"{int(row.windows):,}", f"{int(row.events):,}",
+                          f"{int(row.non_events):,}", *delta])
+    yield "table_03_score_history", ["Recent", "Windows", "Events", "Non-events", "Change", "95% interval"], histories
+
+    cases = []
+    for row in read_table(TABLES / "case_review_10.csv").itertuples():
+        scores = "".join(str(int(getattr(row, f"history_correct_{i}"))) for i in (1, 2, 3))
+        times = ", ".join(f"{getattr(row, f'history_seconds_{i}'):.1f}" for i in (1, 2, 3))
+        cases.append([str(row.participant_id), f"{row.block}/{row.anchor}", scores, times,
+                      f"{row.p_outcomes:.3f}", f"{row.p_combined:.3f}", str(row.label)])
+    yield "table_04_selected_cases", ["Study ID", "Block/j", "Scores", "Recent seconds", "Scores p", "+ Time p", "Label"], cases
+
+    budgets = []
+    for row in read_table(TABLES / "table10_review_budgets.csv").query("model == 'Combined LR'").itertuples():
+        budgets.append([f"{row.budget:.0%}", str(row.selected_windows), str(row.events_selected),
+                        f"{row.precision:.4f}", f"{row.recall:.4f}"])
+    yield "table_05_review_budget", ["Budget", "Selected", "Events", "Precision", "Recall"], budgets
+
+    original = read_table(DATA / "reference/historical_predictions.csv")
+    historical = []
+    for scope in ("all", "0/3", "1/3"):
+        group = original if scope == "all" else original.loc[original.recent_correct_count.eq(int(scope[0]))]
+        for model in ("Outcomes LR", "Combined LR"):
+            old_loss = log_loss(group.target, group[model], labels=[0, 1])
+            historical.append([scope, model, f"{old_loss:.6f}", f"{metrics.loc[(scope, model), 'log_loss']:.6f}"])
+    yield "table_06_historical_comparison", ["Recent history", "Model", "Original Week 10", "Reconstruction"], historical
+
+
+def write_table(directory, stem, headers, rows):
+    fig, ax = plt.subplots(figsize=(8.5, 0.34 * (1 + len(rows)) + 0.12))
+    ax.set_axis_off()
+    widths = np.array([max(map(len, cells)) + 3 for cells in zip(headers, *rows)])
+    table = ax.table(cellText=rows, colLabels=headers, colWidths=widths / widths.sum(),
+                     cellLoc="left", colLoc="left", bbox=[0, 0, 1, 1])
+    table.auto_set_font_size(False)
+    table.set_fontsize(9)
+    for (index, _), cell in table.get_celld().items():
+        cell.set_edgecolor("white")
+        cell.set_facecolor("#dce8eb" if index == 0 else ("#f3f5f6" if index % 2 else "white"))
+        if index == 0:
+            cell.set_text_props(weight="bold")
+    fig.savefig(directory / f"{stem}.png", dpi=320, bbox_inches="tight", pad_inches=0.04)
+    plt.close(fig)
+
+
+def timing_figure(directory):
+    data = read_table(TABLES / "table07_history_differences.csv")
+    data = data.query("first == 'Combined LR' and second == 'Outcomes LR'").set_index(
+        "scope").set_flags(allows_duplicate_labels=False).loc[list(HISTORIES)]
+    delta = data.log_loss_difference
     fig, ax = plt.subplots(figsize=(7.4, 2.65), layout="constrained")
     ax.axvline(0, color="#777777", linewidth=1)
-    ax.errorbar(x, frame.scope, xerr=np.vstack([x-frame.log_loss_ci_low, frame.log_loss_ci_high-x]),
+    ax.errorbar(delta, data.index, xerr=np.vstack([delta - data.log_loss_ci_low, data.log_loss_ci_high - delta]),
                 fmt="o", capsize=4, color="#204e64")
     ax.invert_yaxis()
     ax.set(xlabel="Log loss difference (Combined LR minus Outcomes LR)", ylabel="Recent correct")
     ax.spines[["top", "right"]].set_visible(False)
-    FIGURES.mkdir(exist_ok=True)
-    fig.savefig(FIGURES / "timing_by_history.png", dpi=320)
+    fig.savefig(directory / "timing_by_history.png", dpi=320)
     plt.close(fig)
 
 
-def escape(value):
-    return str(value).replace("&", r"\&").replace("%", r"\%").replace("_", r"\_").replace("#", r"\#")
-
-
-def render(pages):
-    latex = [r"\documentclass[10pt]{article}", r"\usepackage[margin=18mm]{geometry}",
-             r"\usepackage{graphicx,booktabs}", r"\setlength{\parskip}{0.6em}", r"\begin{document}"]
-    with PdfPages(REPORT / "Final_Report.pdf", metadata={"Title": "Response Process Analysis for Assessment Review",
-                  "Author": "Group 04", "CreationDate": None, "ModDate": None}) as pdf:
-        for index, (title, blocks) in enumerate(pages, 1):
-            fig = plt.figure(figsize=(8.27, 11.69))
-            y = .94
-            fig.text(.075, y, title, fontsize=17, weight="bold", color="#184555", va="top")
-            y -= .066
-            latex.append(r"\section*{" + escape(title) + "}")
-            for kind, *values in blocks:
-                caption = values[0]
-                if kind == "h":
-                    fig.text(.075, y, caption, fontsize=12.2, weight="bold", va="top")
-                    y -= .034
-                    latex.append(r"\subsection*{" + escape(caption) + "}")
-                elif kind == "p":
-                    lines = textwrap.wrap(caption, width=91)
-                    fig.text(.075, y, "\n".join(lines), fontsize=9.9, linespacing=1.38, va="top")
-                    y -= .0166 * len(lines) + .023
-                    latex.extend([escape(caption), ""])
-                elif kind == "t":
-                    headers, rows = values[1:]
-                    fig.text(.075, y, caption, fontsize=10.1, weight="bold", va="top")
-                    y -= .027
-                    height = .023 * (len(rows) + 1)
-                    ax = fig.add_axes([.075, y-height, .85, height])
-                    ax.axis("off")
-                    widths = [max([len(str(h)), *[len(str(row[i])) for row in rows]])+3 for i,h in enumerate(headers)]
-                    table = ax.table(cellText=rows, colLabels=headers, cellLoc="left", colLoc="left",
-                                     colWidths=np.array(widths)/sum(widths), bbox=[0,0,1,1])
-                    table.auto_set_font_size(False)
-                    table.set_fontsize(8.7)
-                    for (line, col), cell in table.get_celld().items():
-                        cell.set_edgecolor("white")
-                        cell.set_facecolor("#dde9ee" if line == 0 else ("#f2f5f6" if line%2 else "white"))
-                    y -= height + .026
-                    latex.extend([r"\noindent\textbf{" + escape(caption) + r"}\par",
-                                  r"\begin{tabular}{" + "l"*len(headers) + "}", r"\toprule",
-                                  " & ".join(map(escape, headers)) + r" \\", r"\midrule"])
-                    latex.extend(" & ".join(map(escape, row)) + r" \\" for row in rows)
-                    latex.extend([r"\bottomrule", r"\end{tabular}", ""])
-                else:
-                    ax = fig.add_axes([.085,y-.23,.83,.23])
-                    ax.imshow(plt.imread(FIGURES / "timing_by_history.png"))
-                    ax.axis("off")
-                    y -= .235
-                    fig.text(.075, y, caption, fontsize=9, va="top")
-                    y -= .04
-                    latex.extend([r"\includegraphics[width=\linewidth]{../Results/figures/timing_by_history.png}",
-                                  escape(caption), ""])
-            if y < .045:
-                raise ValueError(f"Report content exceeds page {index}.")
-            fig.text(.075, .035, "GROUP 04  |  MACHINE LEARNING APPLICATIONS", fontsize=8, color="#456570")
-            fig.text(.91, .035, str(index), fontsize=8)
-            pdf.savefig(fig)
-            plt.close(fig)
-            if index < len(pages):
-                latex.append(r"\clearpage")
-    latex.append(r"\end{document}")
-    (REPORT / "final_report.tex").write_text("\n".join(latex) + "\n", encoding="utf-8")
-
-
 def main():
-    timing_figure()
-    render(report_pages())
-    rows = [
-        ("Table 1", "Results/tables/metrics.csv", "comparison_tables.metrics"),
-        ("Table 2", "Results/tables/paired_differences.csv", "comparison_tables.paired"),
-        ("Table 3", "Results/tables/metrics.csv", "comparison_tables.metrics"),
-        ("Figure 1", "Results/tables/table07_history_differences.csv", "05_export_results.timing_figure"),
-        ("Table 4", "Results/tables/case_review_10.csv", "history_tables.select_cases"),
-        ("Table 5", "Results/tables/table10_review_budgets.csv", "history_tables.review_budgets"),
-        ("Table 6", "Data/reference/historical_predictions.csv + Results/tables/metrics.csv", "report_content.report_pages"),
-        ("Anchor example", "Results/fit/oof_predictions.csv", "report_content.report_pages"),
-    ]
-    save_table(pd.DataFrame(rows, columns=["report_item","input","source_function"]), REPORT / "report_sources.csv")
-    record("05_export_results", [*sorted(TABLES.glob("*.csv")), DATA / "reference/historical_predictions.csv",
-           FIT / "oof_predictions.csv", REPORT / "member_case_review.csv", *sorted((ROOT / "Code").glob("*.py"))],
-           [REPORT / "Final_Report.pdf", REPORT / "final_report.tex", REPORT / "report_sources.csv",
-            FIGURES / "timing_by_history.png"])
+    FIGURES.mkdir(parents=True, exist_ok=True)
+    # Use normal directory inheritance so Windows users can read the published PNGs.
+    directory = FIGURES / f".export-{uuid4().hex}"
+    directory.mkdir()
+    try:
+        for stem, headers, rows in report_tables():
+            write_table(directory, stem, headers, rows)
+        timing_figure(directory)
+        outputs = []
+        for asset in sorted(directory.iterdir()):
+            outputs.append(asset.replace(FIGURES / asset.name))
+    finally:
+        rmtree(directory)
+    record("05_export_results", INPUTS, outputs)
 
 
 if __name__ == "__main__":

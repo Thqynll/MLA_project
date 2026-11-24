@@ -1,9 +1,9 @@
 {
   "stage": "02_build_features",
-  "completed_utc": "2026-11-22T12:54:49.368480+00:00",
+  "completed_utc": "2026-11-24T10:34:47.678445+00:00",
   "inputs": {
     "Code/02_build_features.py": "8103644179192a6a9a7545a48f4dbed5fb3cab684cafd7ae70433dc20860bdf7",
-    "Code/config.py": "8235edc019af354948de50aa2e2f9cf73614eced28920a4b11a92418b472dfb1",
+    "Code/config.py": "0335489d0d67d4a4dad7800887beedd9dba947191384982c6d4f642fb55e99bd",
     "Code/response_data.py": "390c2a6e9ae18d345cb5ba4c555fc30ee310fcc8d188166896610b3a241b1b85",
     "Data/reference/development_windows.csv": "60e1eb7bd5b02f1fb13ef101b0a06574af38aa3e012e7f3095a2c8217ca8f8ac",
     "Data/reference/development_windows_with_timing.csv": "06e60184222310d1b26fd230f71f2ce25f8e75283a4a9ffce44521a54a59de52",

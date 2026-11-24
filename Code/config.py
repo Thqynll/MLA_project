@@ -45,7 +45,7 @@ def record(stage, inputs, outputs, **details):
         "02_build_features": ["response_data"],
         "03_train_models": ["score_models", "tree_models"],
         "04_evaluate_predictions": ["history_tables", "comparison_tables", "score_models", "tree_models"],
-        "05_export_results": ["report_content"],
+        "05_export_results": [],
     }
     code = [ROOT / "Code" / (module + ".py") for module in [stage, "config", *dependencies[stage]]]
     payload = dict(stage=stage, completed_utc=datetime.now(timezone.utc).isoformat(),

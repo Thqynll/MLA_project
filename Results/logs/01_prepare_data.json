@@ -1,9 +1,9 @@
 {
   "stage": "01_prepare_data",
-  "completed_utc": "2026-11-22T12:54:03.709340+00:00",
+  "completed_utc": "2026-11-24T10:34:17.876848+00:00",
   "inputs": {
     "Code/01_prepare_data.py": "17bbe63cc5de550cf9a30cb92af70e875427cceb50a59da419022ccc67c4fe5e",
-    "Code/config.py": "8235edc019af354948de50aa2e2f9cf73614eced28920a4b11a92418b472dfb1",
+    "Code/config.py": "0335489d0d67d4a4dad7800887beedd9dba947191384982c6d4f642fb55e99bd",
     "Data/source_checksums.csv": "ced000525bbab84902ecbde4166c7656d0aec6565e70ab17479d1d5c1b0d2d8f"
   },
   "outputs": {
